@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 마이바티스 기본코드 출처--> 
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <!-- 이 xml은 BoardMapper인터페이스와 1:1로 연결되어있고 sql문장을 이파일에 적어놓고 마이바티스가 실행하는 곳임.  -->   
+     <!--인터페이스명 1:1매칭  -->
+     <!--namespace 에다 패키징주소 적어야 BoardMapper.getList()메서드를 xml의 sql과 연결  -->
+     <mapper namespace="org.zerock.mapper.BoardMapper"> 
+     
+     <select id="getList" resultType="org.zerock.domain.BoardVO">
+       <![CDATA[
+     	select * from tbl_board1 where bno > 0 ]]>     	   
+      </select>
+      
+      <!--tbl_board1 db 삽입  자바  getTitle() 을 꺼내서 sql에 넣겠다. -->
+      <insert id="insert"> 
+      insert into tbl_board1(bno, title, content, writer) values (seq_board1.nextval, #{title}, #{content}, #{writer} )       
+      </insert>
+      
+     <insert id="insertSelectKey"> 
+     <selectKey keyProperty="bno" order="BEFORE"  resultType="long">
+     	select seq_board1.nextval from dual
+     </selectKey>
+	insert into tbl_board1(bno, title, content, writer) values (#{bno}, #{title}, #{content}, #{writer}) 
+        </insert>
+        
+		<!-- 1개의 게시글을 보여주는   -->   
+        <!--sql실행 결과를 BoardVO 타입의 객체로 리턴  -->
+       <select id="read" resultType="org.zerock.domain.BoardVO"> 
+       select * from tbl_board1 where bno = #{bno}
+       </select>
+     
+     <!-- 1개의 게시글을 삭제하는   -->  
+     <delete id="delete">
+     delete from tbl_board1 where bno =#{bno}
+     </delete>
+     
+     <update id="update">
+     update tbl_board1 set title= #{title}, content=#{content}, writer=#{writer}, updateDate= sysdate where bno=#{bno}
+     
+     </update>
+     
+     
+     </mapper>
